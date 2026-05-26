@@ -5,6 +5,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,6 +18,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -30,19 +35,16 @@ jobs:
       env:
         VITE_BASE_URL: /examace/
 
-    - name: Configure git
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-
     - name: Deploy to gh-pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        mkdir -p _temp_deploy
-        cp -r frontend/dist/* _temp_deploy/
-        git checkout --orphan gh-pages
-        git rm -rf .
-        cp -r _temp_deploy/* .
-        git add .
-        git commit -m "Deploy to GitHub Pages"
-        git push -u origin gh-pages -f
-        rm -rf _temp_deploy
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git checkout --orphan gh-pages 2>/dev/null || git checkout gh-pages
+        git reset
+        rm -rf .
+        cp -r frontend/dist/* .
+        git add -A
+        git commit -m "Deploy to GitHub Pages" --allow-empty
+        git push --force origin gh-pages
