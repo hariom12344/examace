@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: examace-db
+    environment:
+      POSTGRES_USER: examace_user
+      POSTGRES_PASSWORD: examace_password
+      POSTGRES_DB: examace
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - examace_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: examace-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - examace_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: examace-backend
+    environment:
+      DATABASE_URL: postgresql://examace_user:examace_password@db:5432/examace
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: your-secret-key-change-in-production
+      DEBUG: "False"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend:/app
+    networks:
+      - examace_network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: examace-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - examace_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  examace_network:
+    driver: bridge
