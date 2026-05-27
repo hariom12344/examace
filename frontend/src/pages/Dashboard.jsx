@@ -46,21 +46,24 @@ export default function Dashboard() {
             Welcome to ExamAce! You're logged in and ready to start preparing.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {[
-              { icon: '📝', title: 'Take Exam', desc: 'Start a new mock test', action: () => navigate('/exams') },
-              { icon: '📊', title: 'Analytics', desc: 'View your performance', action: () => navigate('/analytics') },
-              { icon: '📈', title: 'My Results', desc: 'Detailed result history', action: () => navigate('/results') },
+              { icon: '📝', title: 'Take Mock Test', desc: 'Syllabus-aligned practice exams', action: () => navigate('/exams?tab=mock') },
+              { icon: '📚', title: 'Previous Year Papers', desc: 'Actual competitive exam papers', action: () => navigate('/exams?tab=pyq') },
+              { icon: '📊', title: 'Analytics', desc: 'Detailed performance insights', action: () => navigate('/analytics') },
+              { icon: '📈', title: 'My Progress', desc: 'Track your preparation stats', action: () => navigate('/analytics') },
               { icon: '⚙️', title: 'Settings', desc: 'Update your profile', action: () => navigate('/settings') },
             ].map((item, idx) => (
               <div
                 key={idx}
                 onClick={item.action}
-                className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition cursor-pointer hover:bg-gray-50"
+                className="border border-gray-200 rounded-lg p-5 hover:shadow-lg transition cursor-pointer hover:bg-gray-50 flex flex-col justify-between"
               >
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
+                <div>
+                  <div className="text-4xl mb-3">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-gray-600 text-sm">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>

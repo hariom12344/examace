@@ -92,6 +92,7 @@ def add_comprehensive_exams():
                 exam_type=exam_data["exam_type"],
                 difficulty=exam_data["difficulty"],
                 is_published=True,
+                is_pyq=True,
                 created_by=1
             )
             db.add(exam)
@@ -116,20 +117,20 @@ def add_comprehensive_exams():
                 db.add(question)
             
             db.commit()
-            print(f"✅ {exam_data['title']} - {len(exam_data['questions'])} questions added")
+            print(f"[SUCCESS] {exam_data['title']} - {len(exam_data['questions'])} questions added")
 
         print("\n" + "="*60)
-        print("📚 All Sample PYQ Exams Added Successfully!")
+        print("All Sample PYQ Exams Added Successfully!")
         print("="*60)
         
         # Display summary
         all_exams = db.query(Exam).filter(Exam.is_published == True).all()
         for exam in all_exams:
-            print(f"📖 {exam.title}: {len(exam.questions)} questions, {exam.total_marks} marks, {exam.duration} min")
+            print(f"Exam: {exam.title}: {len(exam.questions)} questions, {exam.total_marks} marks, {exam.duration} min")
 
     except Exception as e:
         db.rollback()
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
     finally:
         db.close()
 

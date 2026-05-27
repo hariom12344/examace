@@ -1,4 +1,4 @@
-﻿from database import SessionLocal
+from database import SessionLocal
 from models import Exam, Question
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,7 @@ def add_test_exams():
             exam_type="Bank",
             difficulty="Medium",
             is_published=True,
+            is_pyq=False,
             created_by=1
         )
         db.add(exam1)
@@ -43,6 +44,7 @@ def add_test_exams():
             exam_type="SSC",
             difficulty="Medium",
             is_published=True,
+            is_pyq=False,
             created_by=1
         )
         db.add(exam2)

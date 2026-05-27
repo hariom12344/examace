@@ -2,10 +2,11 @@ import api from './api';
 
 const examAPI = {
   // Get all exams with filters
-  getExams: async (examType = null, difficulty = null, skip = 0, limit = 10) => {
+  getExams: async (examType = null, difficulty = null, isPyq = null, skip = 0, limit = 10) => {
     const params = new URLSearchParams();
     if (examType) params.append('exam_type', examType);
     if (difficulty) params.append('difficulty', difficulty);
+    if (isPyq !== null) params.append('is_pyq', isPyq);
     params.append('skip', skip);
     params.append('limit', limit);
     

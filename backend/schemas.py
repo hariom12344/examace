@@ -46,6 +46,7 @@ class ExamCreate(BaseModel):
     exam_type: str
     difficulty: Optional[str] = "Medium"
     sections: Optional[int] = 3
+    is_pyq: Optional[bool] = False
 
 class ExamUpdate(BaseModel):
     title: Optional[str] = None
@@ -54,10 +55,12 @@ class ExamUpdate(BaseModel):
     total_marks: Optional[int] = None
     difficulty: Optional[str] = None
     is_published: Optional[bool] = None
+    is_pyq: Optional[bool] = None
 
 class ExamResponse(ExamCreate):
     id: int
     is_published: bool
+    is_pyq: bool
     created_by: int
     created_at: datetime
 

@@ -34,6 +34,7 @@ async def create_exam(
         exam_type=exam_data.exam_type,
         difficulty=exam_data.difficulty,
         sections=exam_data.sections,
+        is_pyq=exam_data.is_pyq,
         created_by=current_user.id
     )
     
@@ -48,6 +49,7 @@ async def create_exam(
 async def list_exams(
     exam_type: str = None,
     difficulty: str = None,
+    is_pyq: bool = None,
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db)
@@ -62,6 +64,9 @@ async def list_exams(
     
     if difficulty:
         query = query.filter(Exam.difficulty == difficulty)
+        
+    if is_pyq is not None:
+        query = query.filter(Exam.is_pyq == is_pyq)
     
     exams = query.offset(skip).limit(limit).all()
     
@@ -125,6 +130,8 @@ async def update_exam(
         exam.difficulty = exam_data.difficulty
     if exam_data.is_published is not None:
         exam.is_published = exam_data.is_published
+    if exam_data.is_pyq is not None:
+        exam.is_pyq = exam_data.is_pyq
     
     db.commit()
     db.refresh(exam)

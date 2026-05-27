@@ -40,6 +40,7 @@ class Exam(Base):
     difficulty = Column(String, default="Medium")
     sections = Column(Integer, default=3)
     is_published = Column(Boolean, default=False)
+    is_pyq = Column(Boolean, default=False)
     created_by = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

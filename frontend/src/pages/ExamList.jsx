@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import examAPI from '../services/exam';
 
 export default function ExamList() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Set tab based on URL query param (defaults to 'mock')
+  const currentTab = searchParams.get('tab') === 'pyq' ? 'pyq' : 'mock';
+
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,15 +19,17 @@ export default function ExamList() {
 
   useEffect(() => {
     loadExams();
-  }, [filters]);
+  }, [filters, currentTab]);
 
   const loadExams = async () => {
     try {
       setLoading(true);
       setError(null);
+      const isPyq = currentTab === 'pyq';
       const data = await examAPI.getExams(
         filters.exam_type || null,
-        filters.difficulty || null
+        filters.difficulty || null,
+        isPyq
       );
       setExams(data);
     } catch (err) {
@@ -49,8 +56,38 @@ export default function ExamList() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Available Exams</h1>
-          <p className="text-gray-600">Choose an exam to test your knowledge</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            {currentTab === 'pyq' ? 'Previous Year Papers' : 'Practice Mock Exams'}
+          </h1>
+          <p className="text-gray-600">
+            {currentTab === 'pyq' 
+              ? 'Attempt official previous year question papers from competitive exams' 
+              : 'Choose a syllabus-aligned mock test to prepare for your exam'}
+          </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex border-b border-gray-200 mb-8 gap-6 text-lg font-medium">
+          <button
+            onClick={() => setSearchParams({ tab: 'mock' })}
+            className={`pb-4 border-b-2 px-2 transition-all duration-200 ${
+              currentTab === 'mock'
+                ? 'border-blue-600 text-blue-600 font-bold scale-105'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            🎯 Mock Tests
+          </button>
+          <button
+            onClick={() => setSearchParams({ tab: 'pyq' })}
+            className={`pb-4 border-b-2 px-2 transition-all duration-200 ${
+              currentTab === 'pyq'
+                ? 'border-blue-600 text-blue-600 font-bold scale-105'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            📚 Previous Year Papers (PYQs)
+          </button>
         </div>
 
         {/* Filters */}
@@ -67,10 +104,10 @@ export default function ExamList() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">All Types</option>
-                <option value="IBPS">IBPS</option>
-                <option value="SBI">SBI</option>
-                <option value="SSC">SSC</option>
-                <option value="Railway">Railway</option>
+                <option value="Bank">Bank (IBPS/SBI)</option>
+                <option value="SSC">SSC (CGL)</option>
+                <option value="Railway">Railway (RRB)</option>
+                <option value="CAT">CAT (Quant)</option>
                 <option value="Other">Other</option>
               </select>
             </div>
