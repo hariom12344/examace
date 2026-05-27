@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from config import settings
 from routers import auth_router
-from routers import exam, question, result, analytics
+from routers import exam, question, result, analytics, notifications, leaderboard, question_filter, advanced_analytics
 from database import Base, engine
 
 # Create tables if they don't exist
@@ -72,6 +72,10 @@ app.include_router(exam.router, prefix="/api")
 app.include_router(question.router, prefix="/api")
 app.include_router(result.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")
+app.include_router(advanced_analytics.router)
+app.include_router(notifications.router)
+app.include_router(leaderboard.router)
+app.include_router(question_filter.router)
 
 if __name__ == "__main__":
     import uvicorn

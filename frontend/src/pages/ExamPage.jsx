@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import examAPI from '../services/exam';
 import Timer from '../components/Timer';
 import QuestionDisplay from '../components/QuestionDisplay';
+import ProgressIndicator from '../components/ProgressIndicator';
 
 export default function ExamPage() {
   const { examId } = useParams();
